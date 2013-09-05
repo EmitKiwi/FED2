@@ -9,15 +9,36 @@
 *	Copyleft 2012, all wrongs reversed.
 */
 
-// Variable declaration
-var SANDBOX = "SANDBOX";
-var LINEAIR = "LINEAIR";
-var GPS_AVAILABLE = 'GPS_AVAILABLE';
-var GPS_UNAVAILABLE = 'GPS_UNAVAILABLE';
-var POSITION_UPDATED = 'POSITION_UPDATED';
-var REFRESH_RATE = 1000;
-var currentPosition = currentPositionMarker = customDebugging = debugId = map = interval =intervalCounter = updateMap = false;
-var locatieRij = markerRij = [];
+(function () {
+	// Variable declaration
+	var SANDBOX = "SANDBOX";
+	var LINEAIR = "LINEAIR";
+	var GPS_AVAILABLE = 'GPS_AVAILABLE';
+	var GPS_UNAVAILABLE = 'GPS_UNAVAILABLE';
+	var POSITION_UPDATED = 'POSITION_UPDATED';
+	var REFRESH_RATE = 1000;
+	var currentPosition = currentPositionMarker = customDebugging = debugId = map = interval =intervalCounter = updateMap = false;
+	var locatieRij = markerRij = [];
+
+	var gps = {
+		init: function() {
+			debug_message("Controleer of GPS beschikbaar is...");
+
+			ET.addListener(GPS_AVAILABLE, _start_interval);
+			ET.addListener(GPS_UNAVAILABLE, function(){debug_message('GPS is niet beschikbaar.')});
+
+			(geo_position_js.init())?ET.fire(GPS_AVAILABLE):ET.fire(GPS_UNAVAILABLE);
+		},
+		_start_interval: function() {
+
+		}
+
+	}
+
+})();
+
+
+ 
 
 // Event functies - bron: http://www.nczonline.net/blog/2010/03/09/custom-events-in-javascript/ Copyright (c) 2010 Nicholas C. Zakas. All rights reserved. MIT License
 // Gebruik: ET.addListener('foo', handleEvent); ET.fire('event_name'); ET.removeListener('foo', handleEvent);
