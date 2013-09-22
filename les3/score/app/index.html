@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Score APP</title>
+</head>
+<body>
+	<article id="content" class="col">
+		<section data-route="page1" class="active">
+			<h1 data-bind="title"></h1>
+			<p data-bind="description"></p>
+			 <section data-bind="items">
+			    <section>
+			      <h1 data-bind="title"></h1>
+			      <p data-bind="description"></p>
+			    </section>
+			  </section>
+		</section>
+
+		<section data-route="page2">
+			<h1 data-bind="title"></h1>
+			<p data-bind="description"></p>
+		</section>
+
+		<section data-route="page3">
+			<h1 data-bind="title"></h1>
+			<p data-bind="description"></p>
+		</section>
+	</article>
+
+	<script src="assets/vendor/js/qwery.min.js"></script>
+	<script src="assets/vendor/js/routie.min.js"></script>
+	<script src="assets/vendor/js/ready.min.js"></script>
+	<script src="assets/vendor/js/transparancy.min.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
