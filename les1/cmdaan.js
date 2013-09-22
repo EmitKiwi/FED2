@@ -1,3 +1,4 @@
+var CMDAAN = CMDAAN || ;
 /***
 * cmdaan.js
 *	Bevat functies voor CMDAan stijl geolocatie welke uitgelegd
@@ -8,12 +9,6 @@
 *
 *	Copyleft 2012, all wrongs reversed.
 */
-
-// Event functies - bron: http://www.nczonline.net/blog/2010/03/09/custom-events-in-javascript/ Copyright (c) 2010 Nicholas C. Zakas. All rights reserved. MIT License
-// Gebruik: ET.addListener('foo', handleEvent); ET.fire('event_name'); ET.removeListener('foo', handleEvent);
-function EventTarget(){this._listeners={}}
-EventTarget.prototype={constructor:EventTarget,addListener:function(a,c){"undefined"==typeof this._listeners[a]&&(this._listeners[a]=[]);this._listeners[a].push(c)},fire:function(a){"string"==typeof a&&(a={type:a});a.target||(a.target=this);if(!a.type)throw Error("Event object missing 'type' property.");if(this._listeners[a.type]instanceof Array)for(var c=this._listeners[a.type],b=0,d=c.length;b<d;b++)c[b].call(this,a)},removeListener:function(a,c){if(this._listeners[a]instanceof Array)for(var b=
-this._listeners[a],d=0,e=b.length;d<e;d++)if(b[d]===c){b.splice(d,1);break}}}; var ET = new EventTarget();
 
 (function () {
 	// Variable declaration
@@ -26,35 +21,37 @@ this._listeners[a],d=0,e=b.length;d<e;d++)if(b[d]===c){b.splice(d,1);break}}}; v
 	var currentPosition = currentPositionMarker = customDebugging = debugId = map = interval =intervalCounter = updateMap = false;
 	var locatieRij = markerRij = [];
 
-	var gps = {
-		init: function() {
-			debug_message("Controleer of GPS beschikbaar is...");
+	var CMDAAN.controller = {
+		init: function () {
+			CMDAAN.debug.debugMessage("Controleer of GPS beschikbaar is...");
+			ET.addListener(GPS_AVAILABLE, CMDAAN.gps.startInterval);
+			ET.addListener(GPS_UNAVAILABLE, function(){CMDAAN.debug.debugMessage('GPS is niet beschikbaar.')});
+			(this.init())?ET.fire(GPS_AVAILABLE):ET.fire(GPS_UNAVAILABLE);
+		}
+	}
 
-			ET.addListener(GPS_AVAILABLE, _start_interval);
-			ET.addListener(GPS_UNAVAILABLE, function(){debug_message('GPS is niet beschikbaar.')});
-
-			(geo_position_js.init())?ET.fire(GPS_AVAILABLE):ET.fire(GPS_UNAVAILABLE);
-		},
+	var CMDAAN.gps = {
+		self: this,
 		// Start een interval welke op basis van REFRESH_RATE de positie updated
-		_start_interval: function(event) {
-			debug_message("GPS is beschikbaar, vraag positie.");
-			_update_position();
-			interval = self.setInterval(_update_position, REFRESH_RATE);
-			ET.addListener(POSITION_UPDATED, _check_locations);
+		startInterval: function(event) {
+			CMDAAN.debugMessage("GPS is beschikbaar, vraag positie.");
+			this.updatePosition();
+			interval = self.setInterval(self.update_position, REFRESH_RATE);
+			ET.addListener(POSITION_UPDATED, self.checkLocations);
 		},
 		// Vraag de huidige positie aan geo.js, stel een callback in voor het resultaat
-		_update_position: function() {
+		updatePosition: function() {
 			intervalCounter++;
 			geo_position_js.getCurrentPosition(_set_position, _geo_error_handler, {enableHighAccuracy:true});
 		},
 		// Callback functie voor het instellen van de huidige positie, vuurt een event af
-		_set_position: function(position) {
+		setPosition: function(position) {
 			currentPosition = position;
 			ET.fire("POSITION_UPDATED");
 			debug_message(intervalCounter+" positie lat:"+position.coords.latitude+" long:"+position.coords.longitude);
 		},
 		// Controleer de locaties en verwijs naar een andere pagina als we op een locatie zijn
-		_check_locations: function(event) {
+		checkLocations: function(event) {
 			// Liefst buiten google maps om... maar helaas, ze hebben alle coole functies
 			for (var i = 0; i < locaties.length; i++) {
 				var locatie = {coords:{latitude: locaties[i][3],longitude: locaties[i][4]}};
@@ -79,15 +76,15 @@ this._listeners[a],d=0,e=b.length;d<e;d++)if(b[d]===c){b.splice(d,1);break}}}; v
 			}
 		},
 		// Bereken het verchil in meters tussen twee punten
-		_calculate_distance: function(p1, p2){
+		calculateDistance: function(p1, p2){
 			var pos1 = new google.maps.LatLng(p1.coords.latitude, p1.coords.longitude);
 			var pos2 = new google.maps.LatLng(p2.coords.latitude, p2.coords.longitude);
 			return Math.round(google.maps.geometry.spherical.computeDistanceBetween(pos1, pos2), 0);
 		}
 	}
 
-	var map = {
-		generate_map: function(myOptions, canvasId) {
+	var CMDAAN.map = {
+		generateMap: function(myOptions, canvasId) {
 			// TODO: Kan ik hier asynchroon nog de google maps api aanroepen? dit scheelt calls
 			debug_message("Genereer een Google Maps kaart en toon deze in #"+canvasId)
 			map = new google.maps.Map(document.getElementById(canvasId), myOptions);
@@ -146,7 +143,7 @@ this._listeners[a],d=0,e=b.length;d<e;d++)if(b[d]===c){b.splice(d,1);break}}}; v
 			// Zorg dat de kaart geupdated wordt als het POSITION_UPDATED event afgevuurd wordt
 			ET.addListener(POSITION_UPDATED, update_positie);
 		},
-		update_position: function(event) {
+		updatePosition: function(event) {
 			var newPos = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
 			map.setCenter(newPos);
 			currentPositionMarker.setPosition(newPos);
@@ -154,35 +151,23 @@ this._listeners[a],d=0,e=b.length;d<e;d++)if(b[d]===c){b.splice(d,1);break}}}; v
 
 	}
 
-	var debug = {
-		_geo_error_handler: function(code, message) {
+	var CMDAAN.debug = {
+		geoErrorHandler: function(code, message) {
 			debug_message('geo.js error '+code+': '+message);
 		},
-		debug_message: function(message) {
+		debugMessage: function(message) {
 			(customDebugging && debugId)?document.getElementById(debugId).innerHTML:console.log(message);
 		},
-		set_custom_debugging: function(debugId) {
+		setCustomDebugging: function(debugId) {
 			debugId = this.debugId;
 			customDebugging = true;
 		}
 	}
 
-
-	// GOOGLE MAPS FUNCTIES
-	/**
-	 * generate_map(myOptions, canvasId)
-	 *	roept op basis van meegegeven opties de google maps API aan
-	 *	om een kaart te genereren en plaatst deze in het HTML element
-	 *	wat aangeduid wordt door het meegegeven id.
-	 *
-	 *	@param myOptions:object - een object met in te stellen opties
-	 *		voor de aanroep van de google maps API, kijk voor een over-
-	 *		zicht van mogelijke opties op http://
-	 *	@param canvasID:string - het id van het HTML element waar de
-	 *		kaart in ge-rendered moet worden, <div> of <canvas>
-	 */
-
-	function isNumber(n) {
-	  return !isNaN(parseFloat(n)) && isFinite(n);
+	var CMDAAN.helpers = {
+		isNumber: function(n) {
+			return !isNaN(parseFloat(n)) && isFinite(n);
+		}
 	}
+
 })()
