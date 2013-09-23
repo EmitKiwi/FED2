@@ -1,8 +1,9 @@
 var APP = APP || {};
 
-(function(){
+(function () {
+	// Data objecten
 	APP.page1 = {
-		title:'Pagina 1',
+		title:'Pagina (1)',
 		description:'Pagina 1 is de eerste pagina',
 		items: [
 			{
@@ -21,25 +22,30 @@ var APP = APP || {};
 		]
 	};
 
+
+	// Controller Init
 	APP.controller = {
-		init: function(){
+		init: function () {
+			// Initialize router
 			APP.router.init();
 		}
 	};
 
+	// Router
 	APP.router = {
-		init: function (){
-			routie({
-				'page1': function(){
-					APP.page.render('page1');
-				}, 
-				'page2': function(){
-					APP.page.render('page2');
-				}
+		init: function () {
+	  		routie({
+			    '/page1': function() {
+			    	APP.page.render('page1');
+				},
+			    '*': function() {
+			    	APP.page.render('page1');
+			    }
 			});
 		},
-		change: function() {
-			var route = window.location.hash.slice(2),
+
+		change: function () {
+            var route = window.location.hash.slice(2),
                 sections = qwery('section'),
                 section = qwery('[data-route=' + route + ']')[0];
 
@@ -55,20 +61,23 @@ var APP = APP || {};
             if (!route) {
             	sections[0].classList.add('active');
             }
+
 		}
 	};
 
 	APP.page = {
-		render: function(route){
-			var data = eval('APP.' + route);
+		render: function (route) {
+			// http://javascriptweblog.wordpress.com/2010/04/19/how-evil-is-eval/
+			var data = eval('APP.'+route);
 
 			Transparency.render(qwery('[data-route='+route+']')[0], data);
 			APP.router.change();
 		}
-	};
-
-
-	domready(function() {
+	}
+	// DOM ready
+	domready(function () {
+		// Kickstart application
 		APP.controller.init();
 	});
+	
 })();
