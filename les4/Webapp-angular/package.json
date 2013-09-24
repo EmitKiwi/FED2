@@ -1,0 +1,15 @@
+{
+  "name": "webapp",
+  "version": "0.0.1",
+  "description": "webapp score",
+  "main": "server.js",
+  "dependencies": {
+    "express": "~3.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-2-Clause"
+}
