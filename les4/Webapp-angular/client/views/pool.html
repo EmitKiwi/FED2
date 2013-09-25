@@ -1,0 +1,21 @@
+<h1>{{pageName}}</h1>
+
+<div ng-repeat="pool in pools | orderBy:'name'">
+	<h2>{{pool.name}}</h2>
+	<table>
+		<th>Team naam</th>
+		<th>Plus minus</th>
+		<th>Points Scored</th>
+		<th>Points Allowed</th>
+		<th>Verloren</th>
+		<th>Gewonnen</th>
+		<tr ng-repeat="standing in pool.standings">
+			<td>{{standing.team.name}}</td>
+			<td>{{standing.plus_minus}}</td>
+			<td>{{standing.points_scored}}</td>
+			<td>{{standing.points_allowed}} </td>
+			<td>{{standing.losses}}</td>
+			<td>{{standing.wins}}</td>
+		</tr>
+	</table>
+</div>

@@ -1,5 +1,8 @@
+<h1>{{pageName}}</h1>
 <table>
-	<tr ng-repeat="test in data.objects">
-		{{test.seed}}
+	<tr ng-repeat="game in games">
+		<td>{{game.team_1_score}} - {{game.team_2_score}}</td>
+		<td>{{game.team_1.name}}</td>
+		<td>{{game.team_2.name}}</td>
 	</tr>
 </table>

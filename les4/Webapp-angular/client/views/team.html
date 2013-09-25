@@ -1,0 +1,7 @@
+<h1>{{pageName}}</h1>
+<table>
+	<tr ng-repeat="team in teams | orderBy:seed">
+		<td>{{team.seed}}</td>
+		<td>{{team.team.name}}</td>
+	</tr>
+</table>
