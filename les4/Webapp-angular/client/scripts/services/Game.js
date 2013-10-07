@@ -26,15 +26,15 @@ APP.factory('Game', function ($http) {
 			var url = 	'https://www.leaguevine.com/oauth2/token/?client_id=' + clientId +
 						'&client_secret=' + clientSecret + 
 						'&grant_type=client_credentials&scope=universal';
-			delete $http.defaults.headers.common['X-Requested-With'];
+			//delete $http.defaults.headers.common['X-Requested-With'];
 			$http.get(url).success(callback);
 
 		},*/	 
 		postGameScore: function (post, callback){
 			
-			//this.getAccessToken(function (data) {
-			//	console.log(data);
-			// });
+			/*this.getAccessToken(function (data) {
+				console.log(data);
+			});*/
 
 			var url = 'https://api.leaguevine.com/v1/game_scores/?access_token=' + accessToken + '?callback?';
 			$http.post(url , post, {headers: {'Authorization': 'bearer ' + accessToken}}).success(callback);
