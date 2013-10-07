@@ -1,8 +1,17 @@
 <h1>{{pageName}}</h1>
 <table>
 	<tr ng-repeat="game in games">
-		<td>{{game.team_1_score}} - {{game.team_2_score}}</td>
+		<td>{{game.id}} - </td>
 		<td>{{game.team_1.name}}</td>
 		<td>{{game.team_2.name}}</td>
+		<td>
+			<form>
+				<input ng-model="post.team_1_score" 
+				type="text" placeholder="1" required>
+				<input ng-model="post.team_2_score" 
+				type="text" placeholder="2" required>
+				<button ng-click="submit(post, game.id)">Update</button>
+			</form>
+		</td>
 	</tr>
 </table>

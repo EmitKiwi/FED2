@@ -17,4 +17,5 @@ APP.config(function ($routeProvider) {
 		otherwise({
 			redirectTo: '/'
 		});
+	
 });
