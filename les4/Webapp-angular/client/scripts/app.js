@@ -1,3 +1,16 @@
+/*
+	Breadkdown van je app
+	
+	#config
+		-routeprovider
+		-etc
+	
+	#Factory
+		-getall API
+		-postGamescore
+		-etc
+*/
+
 var APP = angular.module('APP', []);
 
 APP.config(function ($routeProvider) {
